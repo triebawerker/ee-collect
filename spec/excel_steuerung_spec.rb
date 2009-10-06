@@ -7,9 +7,14 @@ require 'fileutils'
 
 describe ExcelSteuerung do
   before :all do
-    orig_dateipfad = "O:/EEAP/REPORTING/Test - DISTRIBUTORS/Xyz_Fixtures/2009/2009 IIQ/2 Days in Paris 06 09.xls"
-    @arbeits_dateipfad = "C:/Projects/Sandbox/2 Days in Paris.xls"
-    FileUtils.copy orig_dateipfad, @arbeits_dateipfad
+    @datei_namen = ["2 Days in Paris 06 09.xls", "We own the Night 06 09.xls"]
+    orig_dateipfad = "O:/EEAP/REPORTING/Test - DISTRIBUTORS/ACME/2009/2009 IIQ/"
+    @arbeits_ordnerpfad = "C:/Projects/Sandbox/2 Days in Paris.xls"
+    #FileUtils.rm_f @arbeits_dateipfad
+    @arbeits_dateipfad = @arbeits_ordnerpfad + "/" + @datei_namen.first
+    @datei_namen.each do |dateiname|
+      FileUtils.copy orig_dateipfad, @arbeits_dateipfad + "/" + dateiname
+    end
   end
 
 
@@ -34,12 +39,34 @@ describe ExcelSteuerung do
     @es.lese_feld("title").should == "2 Days in Paris"
   end
 
-  it "sollte Zellen finden können" do
-    proc { erg = @es.finde_zelle(/Total/) }.should raise_error
-    erg = @es.finde_zelle(/Licensor Share Total/)
-    erg.should == {:zeile => 43, :spalte => 0}
-    z = erg[:zeile]
-    @es.lese_feld("A#{z+1}").should == "Licensor Share Total"
+  it "sollte Zeilen finden können" do
+    proc { zeile = @es.finde_zelle(:zeile, /Total/) }.should raise_error
+
+    zeile = @es.finde_zelle(:zeile, /Licensor Share Total/mi)
+    zeile.should == 43
+    @es.lese_feld("A#{zeile+1}").should == "Licensor Share Total"
+  end
+
+  it "sollte Zeilen in We own the Night 06 09.xls finden können" do
+    proc { zeile = @es.finde_zelle(:zeile, /Total/) }.should raise_error
+
+    zeile = @es.finde_zelle(:zeile, /^MG$/mi)
+    zeile.should == 10
+    @es.lese_feld("A#{zeile+1}").should == "Licensor Share Total"
+  end
+
+  it "sollte Spalten finden können" do
+    proc { zeile = @es.finde_zelle(:spalte, /Total/) }.should raise_error
+    spalte = @es.finde_zelle(:spalte, /Total\s+Licensor/mi)
+    spalte.should == 3
+    @es.lese_feld("D4").should == "Total\nLicensor"
+  end
+
+  it "sollte Zellen mit mehreren Bedingungen finden können" do
+    proc { zeile = @es.finde_zelle(:zeile, [/Total/]) }.should raise_error
+    zeile = @es.finde_zelle(:zeile, [/Licensor Share Total/mi, /Licensor Final HE/mi])
+    zeile.should == 43
+    @es.lese_feld("A#{zeile+1}").should == "Licensor Share Total"
   end
 
   it "Sollte Namen zuweisen können" do

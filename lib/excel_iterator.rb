@@ -18,7 +18,7 @@ class ExcelIterator
   end
 
   def each
-    Dir["O:/EEAP/REPORTING/Test - DISTRIBUTORS/#{@licensee}/#{@jahr}/#{@jahr} #{@quartal}Q/*.xls*"].each do |pfad|
+    Dir["O:/EEAP/REPORTING/Test - DISTRIBUTORS/#{@licensee}/#{@jahr}/#{@jahr} #{@quartal}Q*/*.xls*"].each do |pfad|
       puts pfad
       begin
         excel_steuerung = ExcelSteuerung.new(pfad)
@@ -27,7 +27,7 @@ class ExcelIterator
       rescue Exception => e
         puts "Fahler bei #{pfad}"
         puts e.message
-        puts e.backtrace.first(7).join("\n")
+        puts e.backtrace.first(12).join("\n")
       ensure
         excel_steuerung.schliessen rescue nil
       end

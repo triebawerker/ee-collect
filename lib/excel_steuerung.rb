@@ -4,7 +4,7 @@
 require 'win32ole'
 
 $excel = WIN32OLE.new("Excel.Application")
-$excel.Visible = true
+#$excel.Visible = true
 
 class ExcelSteuerung
   attr_reader :mappe
@@ -35,30 +35,43 @@ class ExcelSteuerung
     @mappe.Names.Add( "Name" => name, "RefersTo" => "=$#{spalten_buchstabe}$#{zeilen_nr}")
   end
 
-  def finde_zelle(erkennungszeichen, optionen = {})
+  def finde_zelle(zeile_spalte, erkennungszeichen_array, optionen = {})
+
+    erkennungszeichen_array = [erkennungszeichen_array] unless erkennungszeichen_array.is_a?(Array)
+
     inhalts_matrix = mappe.ActiveSheet.UsedRange.Value
 
-    gefundene = []
 
-    inhalts_matrix.each_with_index do |zeile, zeilen_index|
-      zeile.each_with_index do |wert, spalten_index|
-        next unless wert.is_a? String
-        if wert =~ erkennungszeichen
-          gefundene << [zeilen_index, spalten_index]
+    gefundene = nil
+
+    erkennungszeichen_array.each do |erkennungszeichen|
+      gefundene = []
+
+      inhalts_matrix.each_with_index do |zeile, zeilen_index|
+        zeile.each_with_index do |wert, spalten_index|
+          next unless wert.is_a?(String)
+          #p [wert =~ erkennungszeichen, wert, erkennungszeichen]
+          if erkennungszeichen =~ wert
+            #p [zeilen_index, spalten_index]
+            interessant_gefunden = case zeile_spalte
+            when :zeile  then zeilen_index
+            when :spalte then spalten_index
+            end
+            gefundene << interessant_gefunden
+          end
         end
+        gefundene.uniq! if zeile_spalte == :zeile
+      end
+
+      if gefundene != []
+        raise "Kennung #{erkennungszeichen.inspect} doppelt gefunden" if gefundene.size > 1
+        break
       end
     end
 
-    raise "#{erkennungszeichen.inspect} nicht gefunden" if gefundene == []
-    unless optionen[:mehrfach_ok]
-      raise "Kennung #{erkennungszeichen.inspect} doppelt gefunden" if gefundene.size > 1
-    end
+    raise "#{erkennungszeichen_array.inspect} nicht gefunden" if gefundene == []
     
-    erg_zeile, erg_spalte = gefundene.first
-
-    { :zeile  => erg_zeile,
-      :spalte => erg_spalte
-    }
+    gefundene.first
   end
 
 

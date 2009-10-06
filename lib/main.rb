@@ -15,6 +15,8 @@ $KCODE = "UTF-8"
 
 require 'active_record'
 
+ä = 3
+p ä
 
 ActiveRecord::Base.establish_connection(
   :adapter  => "mysql",
@@ -61,39 +63,30 @@ class Land < ActiveRecord::Base
   has_many :verkäufe, :foreign_key => "id_Territory"
 end
 
-#FILM
-#film = Film.find(:all, :order => "Title", :conditions => "Title = 'SHUTTER ISLAND'")
-#film = Film.find('006154de-2a55-4c74-8ab8-23f14c5cbdfe')
-#film = Film.find(:first)
-#p film.Title
-#p film.Director
 
+einkauf = Einkauf.find(:first)
 
-einkäufe = Einkauf.find(:all, :conditions => "Archive = '0' and SuppressWhyFixed = '0'")
+p einkauf
 
-#p einkauf
-p einkäufe.map do |einkauf|
-  einkauf.MinimumGurantee.to_f
-end.inspect
+p einkauf.MinimumGurantee
 
+p einkauf.film
 
+film = Film.first
 
-#p einkauf.film.title
+p einkauf.id_FilmAcquired
 
+id_film_acquired = "000d5d23-065d-4b72-a972-5bae90df213f"
 
+verkauf = Verkauf.first
+p verkauf
 
-#p einkauf.id_FilmAcquired
+vk2 = einkauf.verkäufe[1]
 
-#id_film_acquired = "000d5d23-065d-4b72-a972-5bae90df213f"
+p vk2
+p vk2
 
-#verkauf = Verkauf.first
-#p verkauf
-
-#vk2 = einkauf.verkäufe[1]
-
-#p vk2
-
-#vk2territory = vk2.land
+vk2territory = vk2.land
 
 #p film.einkäufe.size
 

@@ -10,24 +10,24 @@ class FelderBenenner
 
   def weise_zu(zuordnung)
     @iterator.each do |es|
-      zuordnung.each do |name, erkennungszeichen|
-        interessante_zeile = if erkennungszeichen[:zeile].is_a?(Integer)
-          erkennungszeichen[:zeile]
-        else
-          zeilen_marke = es.finde_zelle(erkennungszeichen[:zeile], erkennungszeichen)
-          zeilen_marke[:zeile]
+      next if es.mappe.Name =~ /^ZZZ/
+      
+      zuordnung.each do |name, erkennungszeichen_array|
+        erkennungszeichen_array = [erkennungszeichen_array] unless erkennungszeichen_array.is_a?(Array)
+        erkennungszeichen_array.each do |erkennungszeichen|
+          zeile_spalte_paar = [:zeile, :spalte].map do |zeile_oder_spalte|
+            if erkennungszeichen[zeile_oder_spalte].is_a?(Integer)
+              erkennungszeichen[zeile_oder_spalte]
+            else
+              es.finde_zelle(zeile_oder_spalte, erkennungszeichen[zeile_oder_spalte])
+            end
+          end
+
+          es.name_zuweisen(name, *zeile_spalte_paar)
+          if es.lese_feld(name) then break end
         end
 
-        interessante_spalte = if erkennungszeichen[:spalte].is_a?(Integer)
-          erkennungszeichen[:spalte]
-        else
-          spalten_marke = es.finde_zelle(erkennungszeichen[:spalte], erkennungszeichen)
-          spalten_marke[:spalte]
-        end
-
-        es.name_zuweisen(name, interessante_zeile, interessante_spalte)
-
-        raise "Kein Feldinhalt für #{name}" if es.lese_feld(name).nil?
+        raise "Feld mit dem Namen #{name} ist leer!!!" if es.lese_feld(name).nil?
       end
     end
   end
