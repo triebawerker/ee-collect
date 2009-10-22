@@ -1,7 +1,7 @@
 # To change this template, choose Tools | Templates
 # and open the template in the editor.
 
-require 'excel_steuerung'
+#require 'excel_steuerung'
 require 'film_sheet'
 require 'excel_iterator'
 

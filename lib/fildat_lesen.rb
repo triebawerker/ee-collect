@@ -60,11 +60,12 @@ class Verkauf < ActiveRecord::Base
   set_primary_key "id_FilmInSale"
   belongs_to :einkauf, :foreign_key => "id_FilmAcquired"
   belongs_to :land, :foreign_key => "id_Territory"
-  has_and_belongs_to_many :länder, :join_table => "sale_territory_licence_right",
-                          :foreign_key => "id_FilmInSale",
-                          :association_foreign_key => "id_Territory",
-                          :uniq => true
-
+#  has_and_belongs_to_many :länder, :join_table => "sale_territory_licence_right",
+#                          :foreign_key => "id_FilmInSale",
+#                          :association_foreign_key => "id_Territory",
+#                          :order => "sale_territory_licence_right.id_Territory",
+#                          :uniq => true
+#
   belongs_to :adress_typ, :foreign_key => "id_Licensee"
 end
 
@@ -88,6 +89,7 @@ class Land < ActiveRecord::Base
   has_and_belongs_to_many :verkäufe, :join_table => "sale_territory_licence_right",
                           :association_foreign_key => "id_FilmInSale",
                           :foreign_key => "id_Territory",
+                          :order => "sale_territory_licence_right.id_Territory",
                           :uniq => true
 end
 
@@ -110,7 +112,7 @@ if __FILE__ == $0 then
 
     }
 
-  p einkäufe.map.size
+  p verkäufe.map.size
   puts "Fertig"
 
 end

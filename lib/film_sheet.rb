@@ -4,6 +4,8 @@
 require 'konfiguration'
 require 'excel_steuerung'
 
+require 'utilities'
+
 class FilmSheet
   def initialize(pfad_zur_mappe_oder_excel_steuerung)
     case pfad_zur_mappe_oder_excel_steuerung
@@ -44,15 +46,15 @@ class FilmSheet
 
   def agreement_number_aus_filmdata(alle_film_datas)
     passende_filme = alle_film_datas.select do |film_data|
-      film_data.distributor == licensee and
-        film_data.title == title
+      film_data.distributor =~ Regexp.licensee_matcher(licensee) and
+            film_data.title.gsub(/\([^)]+\)/,"").gsub(/[.,]/,"") =~ Regexp.title_matcher(title)
     end
 
     case passende_filme.size
     when 0
       raise "Für Filmsheet #{title} bei Licensee #{licensee} wurde kein FilmData gefunden"
     when 1
-
+      # nur hier OK
     else
       raise "Für Filmsheet #{title} bei Licensee #{licensee} wurden #{passende_filme.size}  gefunden"
     end
@@ -61,4 +63,6 @@ class FilmSheet
 
     passender_film.agreement_number
   end
+
+  
 end

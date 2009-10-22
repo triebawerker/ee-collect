@@ -21,16 +21,16 @@ class ExcelIterator
   def each_pfad
     Dir["#{REPORT_BASIS_PFAD}/#{@licensee}/#{@jahr}/#{@jahr} #{@quartal}Q*/*.xls*"].each do |pfad|
       next if pfad =~ /^ZZZ/
-      yield pfad, @licensee
+      yield pfad
     end    
   end
 
 
   def each
-    each_pfad do |pfad, licensee|
+    each_pfad do |pfad|
       puts pfad
       begin
-        excel_steuerung = ExcelSteuerung.new(pfad, licensee)
+        excel_steuerung = ExcelSteuerung.new(pfad)
         excel_steuerung.oeffnen
         yield excel_steuerung
       rescue Exception => e

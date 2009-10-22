@@ -7,8 +7,9 @@ require 'sheet_ausleser'
 
 
 describe FelderBenenner, " für Agreement Number" do
+  limit = 20000
   licensees = ["ACME"] #["Soyuz", "Palace", "KinoSwiat"]
-  licensees = Dir.entries(REPORT_BASIS_PFAD).select {|dir_name| dir_name !~ /^(\.|ZZZ)/ and dir_name !~ /\.xls.+$/}
+  #licensees = Dir.entries(REPORT_BASIS_PFAD).select {|dir_name| dir_name !~ /^(\.|ZZZ)/ and dir_name !~ /\.xls.+$/}
   jahr = 2009
   quartal = "II"
 
@@ -16,10 +17,10 @@ describe FelderBenenner, " für Agreement Number" do
   licensees.each do |licensee|
     describe "mit #{licensee}" do
       @felder_benenner = FelderBenenner.new(licensee, jahr, quartal)
-      @felder_benenner.neue_felder_benennen
+      p @felder_benenner.neue_felder_benennen #(:limit => limit)
       
       i += 1
-      break if i > 10
+      break if i > 1
     end
   end
 
