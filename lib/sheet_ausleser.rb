@@ -13,9 +13,9 @@ class SheetAusleser
 
   def each
     @iterator.each do |excel_steuerung|
-      filmsheet = FilmSheet.new(excel_steuerung, @licensee)
+      filmsheet = FilmSheet.new(excel_steuerung)
       yield filmsheet
-      filmsheet.schliessen
+      #filmsheet.schliessen
     end
   end
 

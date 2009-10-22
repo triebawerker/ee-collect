@@ -28,3 +28,8 @@ class Regexp
     new( "^\\s*#{match_string}\\s*$", IGNORECASE)
   end
 end
+
+
+def alle_licensees(basis_pfad)
+  Dir.entries(basis_pfad).select {|dir_name| dir_name !~ /^(\.|ZZZ)/ and dir_name !~ /\.xls.+$/}
+end

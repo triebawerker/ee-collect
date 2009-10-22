@@ -44,6 +44,10 @@ class FilmSheet
     @licensee
   end
 
+  def agreement_number
+    @excel_steuerung.lese_feld("agreement_number")
+  end
+
   def agreement_number_aus_filmdata(alle_film_datas)
     passende_filme = alle_film_datas.select do |film_data|
       film_data.distributor =~ Regexp.licensee_matcher(licensee) and

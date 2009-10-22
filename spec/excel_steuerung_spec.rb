@@ -5,7 +5,30 @@ require 'excel_steuerung'
 require 'fileutils'
 require 'konfiguration'
 
-describe ExcelSteuerung do
+sandbox_pfad = File.dirname(File.dirname(__FILE__)) + "/temp"
+ziel_mappenpfad = sandbox_pfad + "/test_excel_steuerung.xls"
+
+describe ExcelSteuerung, "zur Neu-Erzeugung" do
+  before :each do
+    @es = ExcelSteuerung.erstelle_mappe(ziel_mappenpfad)
+  end
+
+  after :each do
+    @es.schliessen
+  end
+
+  it "sollte existieren" do
+    File.exist?(ziel_mappenpfad).should == true
+    @es.oeffnen
+  end
+
+  it "sollte offen sein" do
+    @es.offen?.should be_true
+  end
+end
+
+
+describe ExcelSteuerung, "mit existierenden Mappen" do
   before :all do
     @datei_namen = ["2 Days in Paris 06 09.xls", "We own the Night 06 09.xls"]
 

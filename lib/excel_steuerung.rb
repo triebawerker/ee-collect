@@ -6,16 +6,30 @@ require 'win32ole'
 $excel = WIN32OLE.new("Excel.Application")
 #$excel.Visible = true
 
+XL_LocalSessionChanges = 2
+XL_Excel8 = 56
+
 class ExcelSteuerung
-  attr_reader :mappe, :mappenpfad
+  attr_reader :mappenpfad
   attr_reader :licensee
 
   def initialize(mappenpfad)
     @mappenpfad = mappenpfad
   end
 
+  def self.erstelle_mappe(mappenpfad)
+    mappe = $excel.Workbooks.Add
+    p [XL_LocalSessionChanges, XL_Excel8]
+    $excel.DisplayAlerts = false
+    mappe.SaveAs("Filename" =>mappenpfad, "FileFormat" => XL_Excel8) #
+    #hat nicht funktioniert: , "ConflictResolution" => XL_LocalSessionChanges)
+    $excel.DisplayAlerts = true
+    new(mappenpfad).oeffnen
+  end
+
   def oeffnen
     @mappe = $excel.Workbooks.Open(@mappenpfad.gsub("/","\\"))
+    self
   end
 
   def offen?
@@ -23,11 +37,16 @@ class ExcelSteuerung
   end
 
   def schliessen
+    raise "nicht geöffnete Mappe kann nicht geschlossen werden" unless offen?
     @mappe.Save
     @mappe.Close
     @mappe = nil
   end
 
+  def mappe
+    raise "Mappe nicht geöffnet" unless offen?
+    @mappe
+  end
   def sheet
     mappe.Activesheet
   end

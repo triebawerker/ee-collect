@@ -38,7 +38,13 @@ class ExcelIterator
         puts e.message
         puts e.backtrace.first(12).join("\n")
       ensure
-        excel_steuerung.schliessen rescue puts "konnte #{pfad} nicht schließen"
+        begin
+          excel_steuerung.schliessen
+        rescue
+          puts "konnte #{pfad} nicht schließen"
+          puts $!.message
+          puts $!.backtrace.join("\n")
+        end
       end
     end
   end

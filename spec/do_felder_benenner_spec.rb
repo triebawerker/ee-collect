@@ -2,9 +2,10 @@
 # and open the template in the editor.
 
 require 'do_felder_benenner'
+require 'utilities'
 
 describe DoFelderBenenner, " für Agreement Number" do
-  licensees = Dir.entries(REPORT_BASIS_PFAD).select {|dir_name| dir_name !~ /^(\.|ZZZ)/ and dir_name !~ /\.xls.+$/}
+  licensees = alle_licensees(REPORT_BASIS_PFAD)
   jahr = 2009
   quartal = "II"
 
@@ -12,7 +13,7 @@ describe DoFelderBenenner, " für Agreement Number" do
   licensees.each do |licensee|
     describe "mit #{licensee}" do
       @felder_benenner = FelderBenenner.new(licensee, jahr, quartal)
-      @felder_benenner.neue_felder_benennen
+      p @felder_benenner.neue_felder_benennen
 
       i += 1
       break if i > 10
