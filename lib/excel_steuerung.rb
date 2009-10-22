@@ -7,23 +7,33 @@ $excel = WIN32OLE.new("Excel.Application")
 #$excel.Visible = true
 
 class ExcelSteuerung
-  attr_reader :mappe
+  attr_reader :mappe, :mappenpfad
+  attr_reader :licensee
 
-  def initialize(dateipfad)
-    @dateipfad = dateipfad
+  def initialize(mappenpfad)
+    @mappenpfad = mappenpfad
   end
 
   def oeffnen
-    @mappe = $excel.Workbooks.Open(@dateipfad.gsub("/","\\"))
+    @mappe = $excel.Workbooks.Open(@mappenpfad.gsub("/","\\"))
+  end
+
+  def offen?
+    not @mappe.nil?
   end
 
   def schliessen
     @mappe.Save
     @mappe.Close
+    @mappe = nil
+  end
+
+  def sheet
+    mappe.Activesheet
   end
 
   def lese_feld(feldname)
-    @mappe.ActiveSheet.Range(feldname).Value
+    sheet.Range(feldname).Value
   end
 
   # zeilen_index, spalten_index beginnen bei Null
@@ -39,7 +49,7 @@ class ExcelSteuerung
 
     erkennungszeichen_array = [erkennungszeichen_array] unless erkennungszeichen_array.is_a?(Array)
 
-    inhalts_matrix = mappe.ActiveSheet.UsedRange.Value
+    inhalts_matrix = sheet.UsedRange.Value
 
 
     gefundene = nil

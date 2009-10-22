@@ -3,24 +3,20 @@
 
 require 'excel_steuerung'
 require 'fileutils'
-
+require 'konfiguration'
 
 describe ExcelSteuerung do
   before :all do
     @datei_namen = ["2 Days in Paris 06 09.xls", "We own the Night 06 09.xls"]
-    orig_dateipfad = "O:/EEAP/REPORTING/Test - DISTRIBUTORS/ACME/2009/2009 IIQ/"
-    @arbeits_ordnerpfad = "C:/Projects/Sandbox/2 Days in Paris.xls"
-    #FileUtils.rm_f @arbeits_dateipfad
-    @arbeits_dateipfad = @arbeits_ordnerpfad + "/" + @datei_namen.first
-    @datei_namen.each do |dateiname|
-      FileUtils.copy orig_dateipfad, @arbeits_dateipfad + "/" + dateiname
-    end
+
+    @arbeits_dateipfade = @datei_namen.map {|datei_name |REPORT_BASIS_PFAD + "/ACME/2009/2009 IIQ/" + datei_name}
+
   end
 
 
   before(:each) do
-    @es = ExcelSteuerung.new(@arbeits_dateipfad)
-    #@es2 = ExcelSteuerung.new("O:/EEAP/REPORTING/Test - DISTRIBUTORS/Xyz_Fixtures/2009/2009 IQ/2 Days in Paris 03 09.xls")
+    @es = ExcelSteuerung.new(@arbeits_dateipfade[0])
+   
     @es.oeffnen
   end
 
@@ -29,10 +25,20 @@ describe ExcelSteuerung do
   end
 
 
-  it "sollte sich öffnen lassen" do
+  it "sollte sich öffnen und auch wieder schliessen lassen" do
     @es.mappe.should_not be_nil
-    @es.mappe.ActiveSheet.should_not be_nil
+    @es.offen?.should == true
+    @es.offen?.should be_true
+    @es.sheet.should_not be_nil
+
+    @es.schliessen
+    @es.offen?.should == false
+
+    @es.oeffnen
+    @es.offen?.should == true
   end
+
+
 
 
   it "sollte benannte Felder aabfragen können" do
@@ -48,11 +54,14 @@ describe ExcelSteuerung do
   end
 
   it "sollte Zeilen in We own the Night 06 09.xls finden können" do
-    proc { zeile = @es.finde_zelle(:zeile, /Total/) }.should raise_error
+    es_we_own = ExcelSteuerung.new(@arbeits_dateipfade[1])
+    es_we_own.oeffnen
+    proc { zeile = es_we_own.finde_zelle(:zeile, /Total/) }.should raise_error
 
-    zeile = @es.finde_zelle(:zeile, /^MG$/mi)
+    zeile = es_we_own.finde_zelle(:zeile, /^MG$/mi)
     zeile.should == 10
-    @es.lese_feld("A#{zeile+1}").should == "Licensor Share Total"
+    es_we_own.lese_feld("A#{zeile+1}").should == "MG"
+    es_we_own.schliessen
   end
 
   it "sollte Spalten finden können" do
@@ -69,22 +78,17 @@ describe ExcelSteuerung do
     @es.lese_feld("A#{zeile+1}").should == "Licensor Share Total"
   end
 
-  it "Sollte Namen zuweisen können" do
-    proc{@es.lese_feld("Heinz")}.should raise_error
-    @es.name_zuweisen("Heinz", 3,0)
-    @es.lese_feld("Heinz").should be_nil
-  end
 
   it "Sollte zugewiesene Namen überschreiben können" do
-    @es.name_zuweisen("Heinz", 3,0)
+    @es.name_zuweisen("Heinz", 0,8)
     @es.lese_feld("Heinz").should be_nil
-    @es.name_zuweisen("Heinz", 11,0)
-    @es.lese_feld("Heinz").should == "ACME"
+    @es.name_zuweisen("Heinrich", 0,8)
+    @es.lese_feld("Heinrich").should be_nil
   end
 
-  it "sollte Zellen direkt benennen können" do
-
-  end
+#  it "sollte Zellen direkt benennen können" do
+#
+#  end
 
 end
 

@@ -3,15 +3,17 @@
 
 require 'excel_steuerung'
 require 'film_sheet'
+require 'excel_iterator'
 
 class SheetAusleser
-  def initialize(jahr, quartal)
+  def initialize(licensee, jahr, quartal)
+    @licensee = licensee
+    @iterator = ExcelIterator.new(licensee, jahr, quartal)
   end
 
   def each
-    Dir["O:/EEAP/REPORTING/Test - DISTRIBUTORS/Xyz_Fixtures/#{@jahr}/#{@jahr} #{@quartal}Q/*.xls*"].each do |pfad|
-      puts pfad 
-      filmsheet = FilmSheet.new(pfad)
+    @iterator.each do |excel_steuerung|
+      filmsheet = FilmSheet.new(excel_steuerung, @licensee)
       yield filmsheet
       filmsheet.schliessen
     end

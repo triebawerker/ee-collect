@@ -5,7 +5,7 @@ require 'excel_iterator'
 
 describe ExcelIterator do
   before(:each) do
-    licensee, jahr, quartal = "Xyz_Fixtures", 2009, 2
+    licensee, jahr, quartal = "ACME", 2009, 2
     @excel_iterierer = ExcelIterator.new(licensee, jahr, quartal)
   end
 
@@ -15,7 +15,7 @@ describe ExcelIterator do
       puts excel_steuerung.mappe.Name
       z += 1
     end
-    z.should == 78
+    z.should == 75
   end
 end
 

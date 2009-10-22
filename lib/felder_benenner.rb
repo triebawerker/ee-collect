@@ -3,15 +3,18 @@
 
 require 'excel_iterator'
 
+require 'konfiguration'
+
+require 'film_data'
+
 class FelderBenenner
   def initialize(licensee, jahr, quartal)
     @iterator = ExcelIterator.new(licensee, jahr, quartal)
   end
 
-  def weise_zu(zuordnung)
+  def bestehende_felder_benennen(zuordnung)
     @iterator.each do |es|
-      next if es.mappe.Name =~ /^ZZZ/
-      
+           
       zuordnung.each do |name, erkennungszeichen_array|
         erkennungszeichen_array = [erkennungszeichen_array] unless erkennungszeichen_array.is_a?(Array)
         erkennungszeichen_array.each do |erkennungszeichen|
@@ -31,4 +34,25 @@ class FelderBenenner
       end
     end
   end
+
+  def neue_felder_benennen
+    alle_film_datas = FilmData.alle
+
+    @iterator.each do |excel_steuerung|
+      zeile  = excel_steuerung.finde_zelle(:zeile, /^[tT]otal/)
+      spalte = 0
+
+      ziel_zelle = excel_steuerung.sheet.Cells(zeile+1, spalte+1)
+
+      if ziel_zelle.Value.nil? or ziel_zelle.Value == "EEAPV09-001"
+        excel_steuerung.name_zuweisen("agreement_number", zeile, spalte)
+      else
+        raise "Feld #{[zeile, spalte].inspect} muss leer sein! Gefunden: #{ziel_zelle.Value}"
+      end
+
+      film_sheet = FilmSheet.new(excel_steuerung)
+      ziel_zelle.Value = film_sheet.agreement_number_aus_filmdata(alle_film_datas)
+    end
+  end
+
 end
