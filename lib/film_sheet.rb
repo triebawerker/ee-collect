@@ -93,11 +93,17 @@ class FilmSheet
 
     case passende_filme.size
     when 0
-      raise "Für Filmsheet #{title} bei Licensee #{licensee} wurde kein FilmData gefunden"
+      raise "Für Filmsheet #{title} bei Licensee #{licensee} wurde kein 'Verkauf'-Datensatz in ILDA  gefunden"
     when 1
       # nur hier OK
     else
-      raise "Für Filmsheet #{title} bei Licensee #{licensee} wurden #{passende_filme.size}  gefunden"
+      meldung_string = "Für Filmsheet #{title} bei Licensee #{licensee} wurden #{passende_filme.size} 'Verkauf'-Datensätze in ILDA gefunden"
+      begin
+        meldung_string += "\nUnd zwar:\n" + passende_filme.map(&:inspect).join("\n")
+      rescue
+        nil
+      end
+      raise meldung_string
     end
 
     passender_film = passende_filme.first

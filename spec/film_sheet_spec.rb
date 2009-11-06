@@ -5,7 +5,7 @@ require 'film_sheet'
 require 'film_data'
 
 
-film_data = FilmData.alle #(:limit => limit)
+alle_film_datas = FilmData.alle #(:limit => limit)
 
 describe FilmSheet, "mit Pfad-Initialisierung" do
   before(:each) do
@@ -21,7 +21,7 @@ describe FilmSheet, "mit Pfad-Initialisierung" do
   end
 
   it "sollte aus DB raussuchen können" do
-    agr_num = @fs.agreement_number_aus_filmdata(film_data)
+    agr_num = @fs.agreement_number_aus_filmdata(alle_film_datas)
     agr_num.should be_a(String)
   end
 
@@ -29,14 +29,14 @@ describe FilmSheet, "mit Pfad-Initialisierung" do
     @fs.excel_steuerung.mappe.Names.Item("agreement_number").Delete
     proc { @fs.excel_steuerung.lese_feld("agreement_number") }.should raise_error
     #agr_num.should be_a(String)
-    @fs.trage_agreement_number_ein(film_data)
+    @fs.trage_agreement_number_ein(alle_film_datas)
     agr_num = @fs.excel_steuerung.lese_feld("agreement_number")
     agr_num.should be_a(String)
   end
 end
 
 
-describe FilmSheet, "mit ExcelSteuerung als Initialisierung" do
+if false #describe FilmSheet, "mit ExcelSteuerung als Initialisierung" do
   before(:each) do
     @excel_steuerung = ExcelSteuerung.new("#{REPORT_BASIS_PFAD}/ACME/2009/2009 IIQ/2 Days in Paris 06 09.xls")
     @fs = FilmSheet.new(@excel_steuerung)
@@ -69,8 +69,8 @@ describe FilmSheet, "mit BudFilm Initialisierung" do
   end
 
   it "sollte licensee matchen" do
-    film_data = FilmData.alle #(:limit => limit)
-    agr_num = @fs.agreement_number_aus_filmdata(film_data)
+    @fs.benenne_vorhandene_felder_entsprechend_zuordnung(FILMSHEET_NAMEN_ERKENNUNGSZEICHEN)
+    agr_num = @fs.agreement_number_aus_filmdata(alle_film_datas)
     agr_num.should be_a(String)
   end
 end

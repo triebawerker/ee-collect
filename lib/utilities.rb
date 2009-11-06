@@ -1,19 +1,5 @@
 
-LICENSEE_TO_ILDA_DISTRIBUTOR_AUSNAHMEN = {
-  "BudFilm" => "Budapest Film",
-}
-
-FILM_TITLE_TO_ILDA_STIRNG_AUSNAHMEN = {
-  "Knallhart" => "Tough enough",
-  "1/2 Ritter" => "1/2 Knights",
-  "Emmas Glück" => "Emma's Bliss",
-  "7 Zwerge" => "Seven Dwarfs",
-  "Barfuss" => "Barefoot",
-  "Rouge Assasin" => "War",
-  "Leatherface (TCM III)" => "LEATHERFACE: THE TEXAS CHAINSAW MASSACRE III",
-  "Goodnight and Goodluck" => "GOOD NIGHT, AND GOOD LUCK",
-
-}
+require 'konfiguration'
 
 class Regexp
   def Regexp.licensee_matcher(licensee)

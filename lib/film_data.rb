@@ -18,6 +18,7 @@ class FilmData
   def FilmData.alle(options = nil)
     options ||= {}
     options = options.merge(:conditions => "Archive = '0' and SuppressWhyFixed = '0' and id_FilmAcquired IS NOT NULL")
+    #options.merge!(:include => [:adress_typ, :einkauf])
     Verkauf.all(options).map do |verkauf|
       FilmData.new(verkauf)
     end
