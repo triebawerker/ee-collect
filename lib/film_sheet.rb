@@ -51,7 +51,7 @@ class FilmSheet
   def agreement_number_aus_filmdata(alle_film_datas)
     passende_filme = alle_film_datas.select do |film_data|
       film_data.distributor =~ Regexp.licensee_matcher(licensee) and
-            film_data.title.gsub(/\([^)]+\)/,"").gsub(/[.,]/,"") =~ Regexp.title_matcher(title)
+        film_data.title.gsub(/\([^)]+\)/,"").gsub(/[.,]/,"") =~ Regexp.title_matcher(title)
     end
 
     case passende_filme.size
