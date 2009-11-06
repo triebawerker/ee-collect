@@ -43,23 +43,8 @@ class FelderBenenner
     durchlaufene = erfolgreiche = 0
 
     @iterator.each do |film_sheet|
-      excel_steuerung = film_sheet.excel_steuerung
       durchlaufene += 1
-
-      zeile  = excel_steuerung.finde_zelle(:zeile, /^[tT]otal/)
-      spalte = 0
-
-      ziel_zelle = excel_steuerung.sheet.Cells(zeile+1, spalte+1)
-
-      if ziel_zelle.Value.nil? or ziel_zelle.Value =~ /^(EE|AV).{1,8}-.{1,8}$/
-        excel_steuerung.name_zuweisen("agreement_number", zeile, spalte)
-      else
-        raise "Feld #{[zeile, spalte].inspect} muss leer sein! Gefunden: #{ziel_zelle.Value}"
-      end
-
-      film_sheet = FilmSheet.new(excel_steuerung)
-      ziel_zelle.Value = film_sheet.agreement_number_aus_filmdata(alle_film_datas)
-
+      film_sheet.trage_agreement_number_ein(alle_film_datas)
       erfolgreiche += 1
     end
     {:durchlaufene => durchlaufene, :erfolgreiche => erfolgreiche}

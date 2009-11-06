@@ -17,8 +17,9 @@ FILM_TITLE_TO_ILDA_STIRNG_AUSNAHMEN = {
 
 class Regexp
   def Regexp.licensee_matcher(licensee)
-    if LICENSEE_TO_ILDA_DISTRIBUTOR_AUSNAHMEN.has_key? licensee
-      distributor_string = LICENSEE_TO_ILDA_DISTRIBUTOR_AUSNAHMEN[licensee]
+    distributor_string = licensee
+    if LICENSEE_TO_ILDA_DISTRIBUTOR_AUSNAHMEN.has_key? distributor_string
+      distributor_string = LICENSEE_TO_ILDA_DISTRIBUTOR_AUSNAHMEN[distributor_string]
     end
     new( escape(distributor_string), IGNORECASE)
   end
