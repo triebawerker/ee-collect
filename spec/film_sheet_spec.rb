@@ -16,6 +16,10 @@ describe FilmSheet, "mit Pfad-Initialisierung" do
   it "sollte licensor_share_total ausgeben können" do
     @fs.licensor_share_total
   end
+
+  it "sollte aus DB raussuchen können" do
+    
+  end
 end
 
 
@@ -35,10 +39,14 @@ describe FilmSheet, "mit ExcelSteuerung als Initialisierung" do
     @fs.licensee.should == "ACME"
   end
 
+  it "sollte excel_steuerung zurückgeben" do
+    @fs.excel_steuerung.should be_a ExcelSteuerung
+  end
+
 end
 
 
-describe FilmSheet, "mit BudFilm Initialisierung" do
+if nil #describe FilmSheet, "mit BudFilm Initialisierung" do
   before(:each) do
     @fs = FilmSheet.new("#{REPORT_BASIS_PFAD}/BudFilm/2009/2009 IIQ/2 DaysInParis 06 09.xls")
   end

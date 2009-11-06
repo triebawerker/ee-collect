@@ -7,6 +7,7 @@ require 'excel_steuerung'
 require 'utilities'
 
 class FilmSheet
+  attr_reader :excel_steuerung
   def initialize(pfad_zur_mappe_oder_excel_steuerung)
     case pfad_zur_mappe_oder_excel_steuerung
     when ExcelSteuerung
