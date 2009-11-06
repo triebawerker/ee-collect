@@ -16,24 +16,7 @@ class FelderBenenner
 
   def bestehende_felder_benennen(zuordnung)
     @iterator.each do |film_sheet|
-      excel_steuerung = film_sheet.excel_steuerung
-      zuordnung.each do |name, erkennungszeichen_array|
-        erkennungszeichen_array = [erkennungszeichen_array] unless erkennungszeichen_array.is_a?(Array)
-        erkennungszeichen_array.each do |erkennungszeichen|
-          zeile_spalte_paar = [:zeile, :spalte].map do |zeile_oder_spalte|
-            if erkennungszeichen[zeile_oder_spalte].is_a?(Integer)
-              erkennungszeichen[zeile_oder_spalte]
-            else
-              excel_steuerung.finde_zelle(zeile_oder_spalte, erkennungszeichen[zeile_oder_spalte])
-            end
-          end
-
-          excel_steuerung.name_zuweisen(name, *zeile_spalte_paar)
-          if excel_steuerung.lese_feld(name) then break end
-        end
-
-        raise "Feld mit dem Namen #{name} ist leer!!!" if excel_steuerung.lese_feld(name).nil?
-      end
+      film_sheet.benenne_vorhandene_felder_entsprechend_zuordnung(zuordnung)
     end
   end
 

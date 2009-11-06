@@ -30,7 +30,7 @@ end
 
 #__END__
 
-if nil #describe FelderBenenner, " für existierende Namen" do
+describe FelderBenenner, " für existierende Namen" do
   licensees = ["Soyuzx", "Palace", "KinoSwiat"]
   jahr = 2009
   quartal = "II"
@@ -72,7 +72,7 @@ if nil #describe FelderBenenner, " für existierende Namen" do
   end
 end
 
-describe FelderBenenner, " für neue Namen" do
+if nil #describe FelderBenenner, " für neue Namen" do
   licensees = ["Palace"] #, "KinoSwiat"]
   jahr = 2009
   quartal = "II"
