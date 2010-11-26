@@ -11,6 +11,7 @@ describe DoFelderBenenner, " für Agreement Number" do
   quartal = "II"
 
   i = 0
+
   licensees.each do |licensee|
     describe "mit #{licensee}" do
       @felder_benenner = FelderBenenner.new(licensee, jahr, quartal)
